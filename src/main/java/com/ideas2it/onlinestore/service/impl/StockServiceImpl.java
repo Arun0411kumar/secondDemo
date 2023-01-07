@@ -11,12 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.ideas2it.onlinestore.util.configuration.JwtFilter;
-import com.ideas2it.onlinestore.util.customException.DataNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ideas2it.onlinestore.dto.StockDTO;
@@ -24,7 +21,9 @@ import com.ideas2it.onlinestore.model.Product;
 import com.ideas2it.onlinestore.model.Stock;
 import com.ideas2it.onlinestore.repository.StockRepository;
 import com.ideas2it.onlinestore.service.StockService;
+import com.ideas2it.onlinestore.util.configuration.JwtFilter;
 import com.ideas2it.onlinestore.util.constants.Constant;
+import com.ideas2it.onlinestore.util.customException.DataNotFoundException;
 import com.ideas2it.onlinestore.util.customException.ResourcePersistenceException;
 import com.ideas2it.onlinestore.util.mapper.StockMapper;
 
@@ -33,22 +32,20 @@ import com.ideas2it.onlinestore.util.mapper.StockMapper;
  * This class performs read, add quantity, add quantity, and delete operation
  * This class pass the data into stock repository
  *
- * @version 1.0
  * @author arunkumar
+ * @version 1.0
+ * @since 16-12-2022
  */
 @Service
 public class StockServiceImpl implements StockService {
 
 	private StockRepository stockRepository;
-	private StockMapper stockMapper;
 	private List<Integer> quantities = new ArrayList<>();
 	private Logger logger = LogManager.getLogger(StockServiceImpl.class);
 
 	@Autowired
-	public StockServiceImpl(StockRepository stockRepository, StockMapper stockMapper) {
-		super();
+	public StockServiceImpl(StockRepository stockRepository) {
 		this.stockRepository = stockRepository;
-		this.stockMapper = stockMapper;
 	}
 
 	/**
@@ -89,7 +86,7 @@ public class StockServiceImpl implements StockService {
 		if (null == stockProducts || stockProducts.isEmpty()) {
 			logger.error(Constant.ERROR_MESSAGE_EMPTY_LIST);
 		}
-		return stockMapper.convertEntityToDTO(stockProducts);
+		return StockMapper.convertEntityToDTO(stockProducts);
 	}
 
 	/**
@@ -138,7 +135,7 @@ public class StockServiceImpl implements StockService {
 	 */
 	@Override
 	public StockDTO getStockProductById(long id) {
-		return stockMapper.convertEntityToDTO(getStockProduct(id));
+		return StockMapper.convertEntityToDTO(getStockProduct(id));
 	}
 
 	/**
@@ -175,7 +172,7 @@ public class StockServiceImpl implements StockService {
 	public boolean updateStock(long id, StockDTO stockDTO) {
 		Stock stock = getStockProduct(id);
 		stockDTO.setId(id);
-		stock = stockMapper.convertDTOToEntity(stockDTO);
+		stock = StockMapper.convertDTOToEntity(stockDTO);
 		return !(stockRepository.save(stock).getUpdatedAt().getTime() == stock.getUpdatedAt().getTime());
 	}
 
@@ -239,16 +236,18 @@ public class StockServiceImpl implements StockService {
 	 * @return stock      - details of the stock
 	 */
 	private Stock createStock(Product product) {
-		Stock stock = new Stock();
-		stock.setProductName(product.getName());
-		stock.setQuantity(product.getQuantity());
-		stock.setDateOfManufacture(product.getDateOfManufacture());
-		stock.setDateOfExpire(product.getDateOfExpire());
-		stock.setSeller(JwtFilter.getThreadLocal().get());
-		stock.setProduct(product);
+		Stock stock = null;
+		stock = Stock.builder()
+				.productName(product.getName())
+				.quantity(product.getQuantity())
+				.dateOfManufacture(product.getDateOfManufacture())
+				.dateOfExpire(product.getDateOfExpire())
+				.seller(JwtFilter.getThreadLocal().get())
+				.product(product)
+				.build();
 		stock = stockRepository.save(stock);
 		if (null == stock) {
-			throw new ResourcePersistenceException(Constant.STOCK_CREATION_FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new ResourcePersistenceException(Constant.STOCK_CREATION_FAILED);
 		}
 		return stock;
 	}

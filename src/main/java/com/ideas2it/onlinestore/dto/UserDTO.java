@@ -12,10 +12,12 @@ import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import com.ideas2it.onlinestore.util.constants.Constant;
+import lombok.Setter;
 
 /**
  * It represents the user DTO.
@@ -26,6 +28,7 @@ import com.ideas2it.onlinestore.util.constants.Constant;
  */
 @Getter
 @Setter
+@Builder
 public class UserDTO {
 
     private long id;
@@ -46,5 +49,6 @@ public class UserDTO {
     @Pattern(regexp = Constant.REGEX_FOR_PHONE_NUMBER, message = "Invalid format - Start with 6 - 9 e.g. 9**********")
     private String mobileNumber;
     private List<RoleDTO> roles;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<AddressDTO> addresses;
 }

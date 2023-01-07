@@ -8,8 +8,8 @@
 package com.ideas2it.onlinestore.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * It represents the AuthenticationResponse.
@@ -19,7 +19,6 @@ import lombok.Setter;
  * @since - 2022-12-20
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class AuthenticationResponse {
     private final String token;

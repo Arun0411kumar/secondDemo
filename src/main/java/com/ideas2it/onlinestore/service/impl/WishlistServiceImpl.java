@@ -8,21 +8,20 @@
 package com.ideas2it.onlinestore.service.impl;
 
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.ideas2it.onlinestore.dto.ProductDTO;
+import com.ideas2it.onlinestore.dto.WishlistDTO;
+import com.ideas2it.onlinestore.model.User;
 import com.ideas2it.onlinestore.util.configuration.JwtFilter;
 import com.ideas2it.onlinestore.util.customException.DataNotFoundException;
 import com.ideas2it.onlinestore.util.customException.RedundantDataException;
 import com.ideas2it.onlinestore.util.customException.ResourcePersistenceException;
 import com.ideas2it.onlinestore.util.mapper.ProductMapper;
 import com.ideas2it.onlinestore.util.mapper.UserMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.ideas2it.onlinestore.dto.ProductDTO;
-import com.ideas2it.onlinestore.dto.WishlistDTO;
 import com.ideas2it.onlinestore.model.Product;
 import com.ideas2it.onlinestore.model.Wishlist;
 import com.ideas2it.onlinestore.repository.WishlistRepository;
@@ -53,15 +52,15 @@ public class WishlistServiceImpl implements WishlistService {
      * {@inheritDoc}
      */
     @Override
-    public WishlistDTO createWishlist(WishlistDTO wishlistDTO) {
-        UserMapper userMapper = new UserMapper();
-        Wishlist wishlist = userMapper.convertWishlistDTO(wishlistDTO);
+    public WishlistDTO createWishlist(WishlistDTO wishlistDTO, User user) {
+        Wishlist wishlist = UserMapper.convertWishlistDTO(wishlistDTO);
+        wishlist.setUser(user);
         wishlist = wishlistRepository.save(wishlist);
 
         if (!(0 < wishlist.getId())) {
-            throw new ResourcePersistenceException(Constant.PROFILE_NOT_CREATED, HttpStatus.NOT_ACCEPTABLE);
+            throw new ResourcePersistenceException(Constant.PROFILE_NOT_CREATED);
         }
-        wishlistDTO = userMapper.convertWishlistDAO(wishlist);
+        wishlistDTO = UserMapper.convertWishlistDAO(wishlist);
         logger.info(Constant.DETAILS_FETCHED_SUCCESSFULLY);
         return wishlistDTO;
     }
@@ -74,23 +73,24 @@ public class WishlistServiceImpl implements WishlistService {
         Wishlist wishlist = wishlistRepository.findById(id).orElse(null);
 
         if (null == wishlist) {
-            throw new DataNotFoundException(Constant.WISHLIST_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new DataNotFoundException(Constant.ERROR_MESSAGE_WISHLIST_NOT_FOUND);
         }
         logger.info(Constant.DETAILS_FETCHED_SUCCESSFULLY);
         return wishlist;
     }
 
     /**
-     * Update the wishlist using given wishlist details.
-     * if the details are not valid throws OnlineStoreException.
+     * <p>Update the wishlist using given wishlist details.
+     * if the details are not valid throws RuntimeException.</p>
      *
-     * @param wishlist                details of the wishlist.
+     * @param wishlist    details of the wishlist.
+     * @return Wishlist   details of the wishlist.
      */
     private Wishlist updateWishlist(Wishlist wishlist) {
         wishlist = wishlistRepository.save(wishlist);
 
         if (!(0 < wishlist.getId())) {
-            throw new ResourcePersistenceException(Constant.NOT_UPDATED, HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResourcePersistenceException(Constant.ERROR_MESSAGE_NOT_UPDATED);
         }
         logger.info(Constant.UPDATED_SUCCESSFULLY);
         return wishlist;
@@ -117,12 +117,13 @@ public class WishlistServiceImpl implements WishlistService {
                 return Constant.PRODUCT_ADDED_SUCCESSFULLY;
             }
         }
-        throw new DataNotFoundException(Constant.WISHLIST_NOT_FOUND, HttpStatus.NOT_FOUND);
+        throw new DataNotFoundException(Constant.ERROR_MESSAGE_WISHLIST_NOT_FOUND);
     }
 
     /**
-     * Checks if the given product is already exists in the wishlist or not.
-     * if product is already exists throws OnlineStoreException otherwise returns false.
+     * <p>Checks if the given product is already exists
+     * in the wishlist or not. if product is already exists
+     * throws OnlineStoreException otherwise returns false.</p>
      *
      * @param products       details of products exists in user wishlist.
      * @param productId      id of the product.
@@ -133,7 +134,7 @@ public class WishlistServiceImpl implements WishlistService {
 
         for (Long id: existingId) {
             if (id == productId) {
-                throw new RedundantDataException(Constant.PRODUCT_ALREADY_EXISTS, HttpStatus.INTERNAL_SERVER_ERROR );
+                throw new RedundantDataException(Constant.PRODUCT_ALREADY_EXISTS);
             }
         }
         return false;
@@ -162,11 +163,11 @@ public class WishlistServiceImpl implements WishlistService {
                         }
                     }
                 }
-                throw new DataNotFoundException(Constant.PRODUCTS_NOT_EXISTS, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new DataNotFoundException(Constant.PRODUCTS_NOT_EXISTS);
             }
-            throw new DataNotFoundException(Constant.PRODUCT_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new DataNotFoundException(Constant.PRODUCT_NOT_FOUND);
         }
-        throw new DataNotFoundException(Constant.WISHLIST_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new DataNotFoundException(Constant.ERROR_MESSAGE_WISHLIST_NOT_FOUND);
     }
 
     /**

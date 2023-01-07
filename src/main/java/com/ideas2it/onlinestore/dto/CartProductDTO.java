@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 - 2024 Ideas2it, Inc.All rights are reserved.
- * 
- * This document is protected by copyright. No part of this document may be 
- * reproduced in any form by any means without prior written authorization of 
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
  * Ideas2it and its licensors, if any.
  */
 package com.ideas2it.onlinestore.dto;
@@ -11,27 +11,26 @@ import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 /**
- * 
+ *
  * @author Aabid
  * @version 1.0
  * @since 16-12-2022
  *
  */
 @Getter
-@Setter
+@Builder
 public class CartProductDTO {
-	
+
 	private long id;
-	
+
 	@Min(1)
-	private int quantity;	
+	private int quantity;
 	@JsonIgnore
 	private boolean deleted;
-	
-	private ProductDTO product;
-	
-}
 
+	private ProductDTO product;
+
+}

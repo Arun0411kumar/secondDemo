@@ -3,85 +3,80 @@ package com.ideas2it.onlinestore.util.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.ideas2it.onlinestore.dto.CartProductDTO;
 import com.ideas2it.onlinestore.model.CartProduct;
+
+import lombok.Builder;
 /**
- * 
+ *
  * @author Aabid
  * @version 1.0
  * @since 16-12-2022
  *
  */
-@Component
-public class CartProductMapper {	
-	
-	private ProductMapper productMapper;
-	
-	@Autowired
-	public CartProductMapper(ProductMapper productMapper) {
-		this.productMapper = productMapper;
-	}
+public class CartProductMapper {
 
 	/**
-	 * 
+	 *
 	 * @param cartProduct
 	 * @return
 	 */
-	public CartProductDTO convertCartProductEntityToDTO(CartProduct cartProduct) {
+	@Builder(builderMethodName = "DTOBuilder")
+	public static CartProductDTO convertCartProductEntityToDTO(CartProduct cartProduct) {
 		CartProductDTO cartProductDTO = null;
-		
+
 		if (null != cartProduct) {
-			cartProductDTO = new CartProductDTO();
-			cartProductDTO.setId(cartProduct.getId());
-			cartProductDTO.setQuantity(cartProduct.getQuantity());
-			cartProductDTO.setProduct(productMapper.convertProductToProductDTO(cartProduct.getProduct()));
+			cartProductDTO = CartProductDTO.builder()
+					.id(cartProduct.getId())
+					.quantity(cartProduct.getQuantity())
+					.product(ProductMapper.convertProductToProductDTO(cartProduct.getProduct()))
+					.build();
 		}
 		return cartProductDTO;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param cartProductDTO
 	 * @return
 	 */
-	public CartProduct convertCartProductDTOToEntity(CartProductDTO cartProductDTO) {
+	@Builder(builderMethodName = "EntityBuilder")
+	public static CartProduct convertCartProductDTOToEntity(CartProductDTO cartProductDTO) {
 		CartProduct cartProduct = null;
-		
+
 		if (null != cartProductDTO) {
-			cartProduct = new CartProduct();
-			cartProduct.setId(cartProductDTO.getId());
-			cartProduct.setQuantity(cartProductDTO.getQuantity());
-			cartProduct.setProduct(productMapper.convertProductDTOToProduct(cartProductDTO.getProduct()));
+			cartProduct = CartProduct.builder()
+					.id(cartProductDTO.getId())
+					.quantity(cartProductDTO.getQuantity())
+					.product(ProductMapper.convertProductDTOToProduct(cartProductDTO.getProduct()))
+					.build();
 		}
 		return cartProduct;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param cartProducts
 	 * @return
 	 */
-	public List<CartProductDTO> convertCartProductsToDTOs(List<CartProduct> cartProducts) {
+	public static List<CartProductDTO> convertCartProductsToDTOs(List<CartProduct> cartProducts) {
 		List<CartProductDTO> cartProductDTOs = new ArrayList<>();
-		
+
 		for (CartProduct cartProduct : cartProducts) {
 			CartProductDTO cartProductDTO = convertCartProductEntityToDTO(cartProduct);
 			cartProductDTOs.add(cartProductDTO);
 		}
 		return cartProductDTOs;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param cartProductDTOs
 	 * @return
 	 */
-	public List<CartProduct> convertCartProductDTOsToCartProducts(List<CartProductDTO> cartProductDTOs) {
+	public static List<CartProduct> convertCartProductDTOsToCartProducts(List<CartProductDTO> cartProductDTOs) {
 		List<CartProduct> cartProducts = new ArrayList<>();
-		
+
 		for (CartProductDTO cartProductDTO : cartProductDTOs) {
 			CartProduct cartProduct = convertCartProductDTOToEntity(cartProductDTO);
 			cartProducts.add(cartProduct);

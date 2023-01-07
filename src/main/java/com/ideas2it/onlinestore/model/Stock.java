@@ -16,18 +16,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * The stock class have stock attributes
- * This class contain getter and setter method for Inventory attributes
+ * This class contain getter and setter method for stock attributes
  *
- * @version 1.0
  * @author arunkumar
+ * @version 1.0
+ * @since 16-12-2022
  */
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@SuperBuilder
 public class Stock extends BaseModel {
 
 	@Column(nullable = false)

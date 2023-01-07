@@ -8,15 +8,9 @@
 package com.ideas2it.onlinestore.service.impl;
 
 import java.util.List;
-
-import com.ideas2it.onlinestore.util.configuration.JwtFilter;
-import com.ideas2it.onlinestore.util.customException.DataNotFoundException;
-import com.ideas2it.onlinestore.util.customException.ResourcePersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ideas2it.onlinestore.dto.AddressDTO;
@@ -25,6 +19,10 @@ import com.ideas2it.onlinestore.model.User;
 import com.ideas2it.onlinestore.repository.AddressRepository;
 import com.ideas2it.onlinestore.service.AddressService;
 import com.ideas2it.onlinestore.util.constants.Constant;
+import com.ideas2it.onlinestore.util.configuration.JwtFilter;
+import com.ideas2it.onlinestore.util.customException.DataNotFoundException;
+import com.ideas2it.onlinestore.util.customException.ResourcePersistenceException;
+import com.ideas2it.onlinestore.util.mapper.UserMapper;
 
 /**
  * Service Implementation class for Address.
@@ -35,6 +33,7 @@ import com.ideas2it.onlinestore.util.constants.Constant;
  */
 @Service
 public class AddressServiceImpl implements AddressService {
+
     private AddressRepository addressRepository;
     private Logger logger = LogManager.getLogger(AddressServiceImpl.class);
 
@@ -49,13 +48,12 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public String addAddress(AddressDTO addressDTO) {
         User user = JwtFilter.getThreadLocal().get();
-        ModelMapper modelMapper = new ModelMapper();
-        Address address = modelMapper.map(addressDTO, Address.class);
+        Address address = UserMapper.convertAddressDTOToDAO(addressDTO);
         address.setUser(user);
         address = addressRepository.save(address);
 
         if (!(0 < address.getId())) {
-            throw new ResourcePersistenceException(Constant.ADDRESS_NOT_ADDED, HttpStatus.NOT_ACCEPTABLE);
+            throw new ResourcePersistenceException(Constant.ERROR_MESSAGE_ADDRESS_NOT_ADDED);
         }
         logger.info(Constant.ADDRESS_ADDED_SUCCESSFULLY);
         return user.getFirstName() + Constant.ADDRESS_ADDED_SUCCESSFULLY;
@@ -77,7 +75,7 @@ public class AddressServiceImpl implements AddressService {
                 return user.getFirstName() + Constant.ADDRESS_DELETED_SUCCESSFULLY;
             }
         }
-        throw new DataNotFoundException(Constant.ADDRESS_NOT_FOUND, HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new DataNotFoundException(Constant.ADDRESS_NOT_FOUND);
     }
 
     /**
@@ -89,10 +87,9 @@ public class AddressServiceImpl implements AddressService {
         
         if (null == address || address.isDeleted()) {
             logger.error(Constant.ADDRESS_NOT_FOUND);
-            throw new DataNotFoundException(Constant.ADDRESS_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new DataNotFoundException(Constant.ADDRESS_NOT_FOUND);
         }
-        ModelMapper modelMapper = new ModelMapper();
         logger.info(Constant.DETAILS_FETCHED_SUCCESSFULLY);
-        return modelMapper.map(address, AddressDTO.class);
+        return UserMapper.convertAddressDAOToDTO(address);
     }
 }

@@ -10,8 +10,6 @@ package com.ideas2it.onlinestore.util.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.ideas2it.onlinestore.dto.AddressDTO;
 import com.ideas2it.onlinestore.dto.ProductDTO;
 import com.ideas2it.onlinestore.dto.RoleDTO;
@@ -30,7 +28,6 @@ import com.ideas2it.onlinestore.model.Wishlist;
  * @version - 1.0
  * @since - 2022-12-21
  */
-@Component
 public class UserMapper {
 
     /**
@@ -39,18 +36,16 @@ public class UserMapper {
      * @param userDTO   details of the user.
      * @return User     converted user details.
      */
-    public User convertUserDTOToDAO(UserDTO userDTO) {
-        System.out.println(userDTO.getFirstName());
-        User user = new User();
-
-        user.setId(userDTO.getId());
-        user.setFirstName(userDTO.getFirstName());
-        user.setMiddleName(userDTO.getMiddleName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setMobileNumber(userDTO.getMobileNumber());
-        return user;
+    public static User convertUserDTOToDAO(UserDTO userDTO) {
+        System.out.println(userDTO.getEmail());
+        return User.builder()
+                .id(userDTO.getId())
+                .firstName(userDTO.getFirstName())
+                .middleName(userDTO.getMiddleName())
+                .lastName(userDTO.getLastName())
+                .email(userDTO.getEmail())
+                .password(userDTO.getPassword())
+                .mobileNumber(userDTO.getMobileNumber()).build();
     }
 
     /**
@@ -59,16 +54,14 @@ public class UserMapper {
      * @param user       details of the user DAO.
      * @return UserDTO   details of the user DTO.
      */
-    public UserDTO convertUserDAOToDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-
-        userDTO.setId(user.getId());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setMiddleName(user.getMiddleName());
-        userDTO.setLastName(user.getLastName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setMobileNumber(user.getMobileNumber());
-        return userDTO;
+    public static UserDTO convertUserDAOToDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .middleName(user.getMiddleName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .mobileNumber(user.getMobileNumber()).build();
     }
 
     /**
@@ -77,19 +70,16 @@ public class UserMapper {
      * @param addressDTO   details of the address DTO.
      * @return Address     details of the address DAO.
      */
-    public Address convertAddressDTOToDAO(AddressDTO addressDTO) {
-        Address address = new Address();
-
-        address.setId(addressDTO.getId());
-        address.setDoorNumber(addressDTO.getDoorNumber());
-        address.setStreet(addressDTO.getStreet());
-        address.setCity(addressDTO.getCity());
-        address.setState(addressDTO.getState());
-        address.setPinCode(addressDTO.getPinCode());
-        address.setType(addressDTO.getType());
-        address.setLandmark(addressDTO.getLandmark());
-        address.setUser(convertUserDTOToDAO(addressDTO.getUser()));
-        return address;
+    public static Address convertAddressDTOToDAO(AddressDTO addressDTO) {
+        return Address.builder()
+                .id(addressDTO.getId())
+                .doorNumber(addressDTO.getDoorNumber())
+                .street(addressDTO.getStreet())
+                .city(addressDTO.getCity())
+                .state(addressDTO.getState())
+                .pinCode(addressDTO.getPinCode())
+                .type(addressDTO.getType())
+                .landmark(addressDTO.getLandmark()).build();
     }
 
     /**
@@ -98,18 +88,16 @@ public class UserMapper {
      * @param address         details of the address DAO.
      * @return AddressDTO     details of the address DTO.
      */
-    public AddressDTO convertAddressDAOToDTO(Address address) {
-        AddressDTO addressDTO = new AddressDTO();
-
-        addressDTO.setId(address.getId());
-        addressDTO.setDoorNumber(address.getDoorNumber());
-        addressDTO.setStreet(address.getStreet());
-        addressDTO.setCity(address.getCity());
-        addressDTO.setState(address.getState());
-        addressDTO.setPinCode(address.getPinCode());
-        addressDTO.setType(address.getType());
-        addressDTO.setLandmark(address.getLandmark());
-        return addressDTO;
+    public static AddressDTO convertAddressDAOToDTO(Address address) {
+        return AddressDTO.builder()
+                .id(address.getId())
+                .doorNumber(address.getDoorNumber())
+                .street(address.getStreet())
+                .city(address.getCity())
+                .state(address.getState())
+                .pinCode(address.getPinCode())
+                .type(address.getType())
+                .landmark(address.getLandmark()).build();
     }
 
     /**
@@ -118,12 +106,10 @@ public class UserMapper {
      * @param roleDTO    details of the role DTO.
      * @return Role      details of the role DAO.
      */
-    public Role convertRoleDTOToDAO(RoleDTO roleDTO) {
-        Role role = new Role();
-
-        role.setId(roleDTO.getId());
-        role.setType(roleDTO.getType());
-        return role;
+    public static Role convertRoleDTOToDAO(RoleDTO roleDTO) {
+        return Role.builder()
+                .id(roleDTO.getId())
+                .type(roleDTO.getType()).build();
     }
 
     /**
@@ -132,12 +118,10 @@ public class UserMapper {
      * @param role        details of the role DAO.
      * @return RoleDTO    details of the role DTO.
      */
-    public RoleDTO convertRoleDAOToDTO(Role role) {
-        RoleDTO roleDTO = new RoleDTO();
-
-        roleDTO.setId(role.getId());
-        roleDTO.setType(role.getType());
-        return roleDTO;
+    public static RoleDTO convertRoleDAOToDTO(Role role) {
+        return RoleDTO.builder()
+                .id(role.getId())
+                .type(role.getType()).build();
     }
 
     /**
@@ -147,22 +131,20 @@ public class UserMapper {
      * @param wishlist        details of the wishlist DAO.
      * @return WishlistDTO    details of the wishlist DTO.
      */
-    public WishlistDTO convertWishlistDAO(Wishlist wishlist) {
-        WishlistDTO wishlistDTO = new WishlistDTO();
+    public static WishlistDTO convertWishlistDAO(Wishlist wishlist) {
+        List<ProductDTO> products = new ArrayList<>();
 
-        wishlist.setId(wishlistDTO.getId());
-        wishlistDTO.setName(wishlist.getName());
-
-        if (!wishlist.getProducts().isEmpty()) {
-            List<ProductDTO> products = new ArrayList<>();
+        if (null != wishlist.getProducts()) {
             ProductMapper productMapper = new ProductMapper();
 
             for (Product product: wishlist.getProducts()) {
                 products.add(productMapper.convertProductToProductDTO(product));
             }
-            wishlistDTO.setProducts(products);
         }
-        return wishlistDTO;
+        return WishlistDTO.builder()
+                .id(wishlist.getId())
+                .name(wishlist.getName())
+                .products(products).build();
     }
 
     /**
@@ -171,24 +153,29 @@ public class UserMapper {
      * @param wishlistDTO    details of the wishlist DAO.
      * @return Wishlist      details of the wishlist DTO.
      */
-    public Wishlist convertWishlistDTO(WishlistDTO wishlistDTO) {
-        Wishlist wishlist = new Wishlist();
-
-        wishlist.setId(wishlistDTO.getId());
-        wishlist.setName(wishlistDTO.getName());
-        return wishlist;
+    public static Wishlist convertWishlistDTO(WishlistDTO wishlistDTO) {
+        return Wishlist.builder()
+                .id(wishlistDTO.getId())
+                .name(wishlistDTO.getName()).build();
     }
 
-    public User convertUserDTO(UserDTO userDTO) {
-        System.out.println(userDTO.getFirstName());
+    /**
+     * Converts the user DTO objects into user DAO objects.
+     * also converts the address DTO objects into address DAO objects
+     * and converts the role DTO objects into role DAO object.
+     *
+     * @param userDTO    details of the user DTO.
+     * @return User      details of the user DAO.
+     */
+    public static User convertUserDTO(UserDTO userDTO) {
         User user = convertUserDTOToDAO(userDTO);
 
-        if (!(userDTO.getAddresses().isEmpty())) {
+        if ((null != userDTO.getAddresses())) {
             List<Address> addresses = new ArrayList<>();
             for (AddressDTO addressDTO: userDTO.getAddresses()) {
                 addresses.add(convertAddressDTOToDAO(addressDTO));
             }
-            user.setAddresses(addresses);
+            user = User.builder().addresses(addresses).build();
         }
 
         if (!(userDTO.getRoles().isEmpty())) {
@@ -196,22 +183,28 @@ public class UserMapper {
             for (RoleDTO role: userDTO.getRoles()) {
                 roles.add(convertRoleDTOToDAO(role));
             }
-            user.setRoles(roles);
+            user = User.builder().roles(roles).build();
         }
-
-
         return user;
     }
 
-    public UserDTO convertUserDAO(User user) {
+    /**
+     * Converts the user DAO objects into user DTO objects.
+     * also converts the address DAO objects into address DTO objects
+     * and converts the role DAO objects into role DTO object.
+     *
+     * @param user        details of the user DTO.
+     * @return UserDTO    details of the user DAO.
+     */
+    public static UserDTO convertUserDAO(User user) {
         UserDTO userDTO = convertUserDAOToDTO(user);
 
-        if (!(user.getAddresses().isEmpty())) {
+        if ((null != user.getAddresses())) {
             List<AddressDTO> addresses = new ArrayList<>();
             for (Address address: user.getAddresses()) {
                 addresses.add(convertAddressDAOToDTO(address));
             }
-            userDTO.setAddresses(addresses);
+            userDTO = UserDTO.builder().addresses(addresses).build();
         }
 
         if (!(user.getRoles().isEmpty())) {
@@ -219,7 +212,7 @@ public class UserMapper {
             for (Role role: user.getRoles()) {
                 roles.add(convertRoleDAOToDTO(role));
             }
-            userDTO.setRoles(roles);
+            userDTO = UserDTO.builder().roles(roles).build();
         }
         return userDTO;
     }

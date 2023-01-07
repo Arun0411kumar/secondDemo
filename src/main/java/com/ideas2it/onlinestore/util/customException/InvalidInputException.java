@@ -6,9 +6,9 @@ package com.ideas2it.onlinestore.util.customException;
  * @version 1.0
  * @author arunkumar
  */
-public class RedundantDataException extends RuntimeException {
+public class InvalidInputException extends RuntimeException {
 
-	public RedundantDataException(String message) {
-		super(message);
-	}
+    public InvalidInputException(String message) {
+        super(message);
+    }
 }

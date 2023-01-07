@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Getter
 @Setter
+@SuperBuilder
 public class User extends BaseModel implements UserDetails {
     @Column(nullable = false)
     private String firstName;
@@ -58,6 +60,10 @@ public class User extends BaseModel implements UserDetails {
     private Cart cart;
     @OneToOne(mappedBy ="user")
     private Wishlist wishlist;
+
+    public User() {
+
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

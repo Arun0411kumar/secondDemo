@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 Ideas2it, Inc.All rights are reserved.
- * 
- * This document is protected by copyright. No part of this document may be 
- * reproduced in any form by any means without prior written authorization of 
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
  * Ideas2it and its licensors, if any.
  */
 package com.ideas2it.onlinestore.service.impl;
@@ -40,11 +40,11 @@ import com.ideas2it.onlinestore.util.mapper.ProductMapper;
 
 /**
  * This class represents the implementation for the
- * Cart Service interface and overrides all the methods 
+ * Cart Service interface and overrides all the methods
  * present in the service interface. In addition to it
  * this class can have some additional methods that are
  * required to implement the desired business logic.
- * 
+ *
  * @author Aabid
  * @version 1.0
  * @since 16-12-2022
@@ -52,34 +52,30 @@ import com.ideas2it.onlinestore.util.mapper.ProductMapper;
  */
 @Service
 public class CartServiceImpl implements CartService {
-	
-	private CartRepository cartRepository;	
-	private ProductService productService;	
+
+	private CartRepository cartRepository;
+	private ProductService productService;
 	private StockService stockService;
-	private CartMapper cartMapper;
-	private ProductMapper productMapper;
-    private Logger logger = LogManager.getLogger(CartServiceImpl.class);
-	
+	private Logger logger = LogManager.getLogger(CartServiceImpl.class);
+
 	@Autowired
-	public CartServiceImpl(CartRepository cartRepository, 
-			ProductService productService, StockService stockService,
-			CartMapper cartMapper, ProductMapper productMapper) {
+	public CartServiceImpl(CartRepository cartRepository,
+						   ProductService productService, StockService stockService) {
+
 		this.cartRepository = cartRepository;
 		this.productService = productService;
 		this.stockService = stockService;
-		this.cartMapper = cartMapper;
-		this.productMapper = productMapper;
 	}
-	
-	/** 
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public CartDTO createCart(CartDTO cartDTO) {
-		Cart cart = cartRepository.save(cartMapper.convertCartDTOToEntity(cartDTO));
+		Cart cart = cartRepository.save(CartMapper.convertCartDTOToEntity(cartDTO));
 		logger.info(Constant.CART_CREATED);
-		return cartMapper.convertCartEntityToDTO(cart);
-		
+		return CartMapper.convertCartEntityToDTO(cart);
+
 	}
 
 	/**
@@ -90,24 +86,25 @@ public class CartServiceImpl implements CartService {
 		User user = JwtFilter.threadLocal.get();
 		long productId = cartProductInputDTO.getProductId();
 		int quantity = cartProductInputDTO.getQuantity();
-		Product product = productMapper.convertProductDTOToProduct(productService.getById(productId));
-		
+		Product product = ProductMapper.convertProductDTOToProduct(productService.getById(productId));
+
 		if (null != user) {
 			Cart cart = user.getCart();
 			List<CartProduct> cartProducts = cart.getCartProducts();
-			
+
 			for (CartProduct cartProduct : cartProducts) {
-				
+
 				if(Objects.equals(cartProduct.getProduct().getId(), product.getId())) {
 					quantity = quantity + cartProduct.getQuantity();
 					cartProduct.setQuantity(quantity);
 				} else {
-					cartProduct = new CartProduct(quantity, product);
-					cartProducts.add(cartProduct);					
+					cartProduct.setQuantity(quantity);
+					cartProduct.setProduct(product);
+					cartProducts.add(cartProduct);
 				}
 			}
 			int stockQuantity = stockService.getQuantity(product.getName());
-			
+
 			if (stockQuantity > quantity) {
 				cart.setCartProducts(cartProducts);
 				cart.setCartTotal(updateCartTotal(cartProducts));
@@ -115,31 +112,29 @@ public class CartServiceImpl implements CartService {
 				logger.info(Constant.ADD_TO_CART);
 				return cartDTO;
 			} else {
-				logger.info(Constant.INSUFFICIENT_STOCK);
-				throw new InsufficientStockException(Constant.INSUFFICIENT_STOCK, HttpStatus.INSUFFICIENT_STORAGE);
+				throw new InsufficientStockException(Constant.INSUFFICIENT_STOCK);
 			}
 		} else {
-			logger.error(Constant.USER_NOT_FOUND);
-			throw new DataNotFoundException(Constant.USER_NOT_FOUND, HttpStatus.NO_CONTENT);
+			throw new DataNotFoundException(Constant.USER_NOT_FOUND);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public CartDTO removeProductFromCart(long productId) {
 		User user = JwtFilter.threadLocal.get();
-		
-		if (null != user) {			
+
+		if (null != user) {
 			Cart cart = user.getCart();
 			List<CartProduct> cartProducts = new CopyOnWriteArrayList<>();
 			cartProducts.addAll(cart.getCartProducts());
-			
+
 			if (!cartProducts.isEmpty()) {
-				
+
 				for (CartProduct cartProduct : cartProducts) {
-					
+
 					if (Objects.equals(cartProduct.getProduct().getId(), productId)) {
 						cartProduct.setDeleted(true);
 					}
@@ -147,14 +142,13 @@ public class CartServiceImpl implements CartService {
 				cart.setCartProducts(cartProducts);
 				CartDTO cartDTO = convertCartEntityToDTO(cartRepository.save(cart));
 				logger.info(Constant.REMOVE_FROM_CART);
-				return cartDTO;				
+				return cartDTO;
 			} else {
-				logger.info(Constant.EMPTY_CART);
-				throw new DataNotFoundException(Constant.EMPTY_CART, HttpStatus.NOT_FOUND); 
+				throw new DataNotFoundException(Constant.EMPTY_CART);
 			}
 		} else {
 			logger.error(Constant.USER_NOT_FOUND);
-			throw new DataNotFoundException(Constant.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+			throw new DataNotFoundException(Constant.USER_NOT_FOUND);
 		}
 	}
 
@@ -166,16 +160,16 @@ public class CartServiceImpl implements CartService {
 		User user = JwtFilter.threadLocal.get();
 		Cart cart = user.getCart();
 		cart.setCartTotal(updateCartTotal(cart.getCartProducts()));
-		CartDTO cartDTO = cartMapper.convertCartEntityToDTO(cart);
+		CartDTO cartDTO = CartMapper.CartDTOBuilder().cart(cart).build();
 		logger.info(Constant.CART_FETCHED);
-		return cartDTO;		
+		return cartDTO;
 	}
-	
+
 	/**
 	 * <p>This methods calculates the current cart total by fetching
 	 * the price of each product that has been added to the cart.</p>
-	 * 
-	 * @param cartProducts(List of products that have been added 
+	 *
+	 * @param cartProducts(List of products that have been added
 	 * to the cart)
 	 * @return double(current value of the cart)
 	 */
@@ -190,32 +184,34 @@ public class CartServiceImpl implements CartService {
 		logger.info(Constant.REMOVE_FROM_CART);
 		return total;
 	}
-	
+
 	/**
-	 * <p>This method takes a cart object and converts it into 
+	 * <p>This method takes a cart object and converts it into
 	 * a cartDTO object.</p
 	 *
 	 * @param cart(cart object)
 	 * @return CartDTO
 	 */
-    public CartDTO convertCartEntityToDTO(Cart cart) {
-    	CartDTO cartDTO = new CartDTO();
-    	cartDTO.setId(cart.getId());
-    	List<CartProduct> cartProducts = cart.getCartProducts().stream()
-    			.filter(cartProduct -> (!cartProduct.isDeleted()))
-    			.collect(Collectors.toList());
-    	List<CartProductDTO> cartProductDTOs = new ArrayList<>();
-    	cartDTO.setCartTotal(updateCartTotal(cartProducts));
-    	
-    	for (CartProduct cartProduct : cartProducts) {
-			CartProductDTO cartProductDTO = new CartProductDTO();
-			cartProductDTO.setId(cartProduct.getId());
-			cartProductDTO.setQuantity(cartProduct.getQuantity());
-			cartProductDTO.setProduct(productService.getById(cartProduct.getProduct().getId()));
+	public CartDTO convertCartEntityToDTO(Cart cart) {
+		List<CartProduct> cartProducts = cart.getCartProducts().stream()
+				.filter(cartProduct -> (!cartProduct.isDeleted()))
+				.collect(Collectors.toList());
+		List<CartProductDTO> cartProductDTOs = new ArrayList<>();
+
+		for (CartProduct cartProduct : cartProducts) {
+			CartProductDTO cartProductDTO = CartProductDTO.builder()
+					.id(cartProduct.getId())
+					.quantity(cartProduct.getQuantity())
+					.product(productService.getById(cartProduct.getProduct().getId()))
+					.build();
 			cartProductDTOs.add(cartProductDTO);
-		}    	
-    	cartDTO.setCartProducts(cartProductDTOs);
-    	return cartDTO;
-    }
-	
+		}
+		CartDTO cartDTO = CartDTO.builder()
+				.id(cart.getId())
+				.cartTotal(updateCartTotal(cartProducts))
+				.cartProducts(cartProductDTOs)
+				.build();
+		return cartDTO;
+	}
+
 }

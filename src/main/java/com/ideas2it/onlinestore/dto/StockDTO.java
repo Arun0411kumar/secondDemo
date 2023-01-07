@@ -7,25 +7,27 @@
  */
 package com.ideas2it.onlinestore.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * It represents the stock DTO.
  *
- * @author - arunkumar
- * @version - 1.0
+ * @author arunkumar
+ * @version 1.0
+ * @since 16-12-2022
  */
 @Getter
 @Setter
+@Builder
 public class StockDTO {
 
 	private long id;

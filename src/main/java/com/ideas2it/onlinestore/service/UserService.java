@@ -22,10 +22,11 @@ import com.ideas2it.onlinestore.dto.UserDTO;
 public interface UserService extends UserDetailsService {
 
     /**
-     * User is created given details and email id and mobileNumber is validated
-     * whether the given mail and mobileNumber is already exists or not.
+     * <p>User is created using given details,before create a user the
+     * given email id and mobileNumber is validated whether
+     * the given mail and mobileNumber is already exists or not.
      * if the given email id and mobileNumber is already exists throws
-     * RedundantDataException otherwise returns user object.
+     * RuntimeException otherwise returns user object.</p>
      *
      * @param user                     details of the user.
      * @return String                  status message.
@@ -33,9 +34,9 @@ public interface UserService extends UserDetailsService {
     UserDTO createUser(UserDTO user);
 
     /**
-     * Get the user details using the given user id.
-     * if the given user id is not exists throws OnlineStoreException
-     * otherwise returns user details object.
+     * <p>Get the user details using the given user id.
+     * if the given user id is not exists throws RuntimeException
+     * otherwise returns user details object.</p>
      *
      * @param id                        id of the user.
      * @return UserDTO                  details of the user.
@@ -43,11 +44,11 @@ public interface UserService extends UserDetailsService {
     UserDTO getUserById(long id);
 
     /**
-     * Update the user details using given details.
+     * <p>Update the user details using given details.
      * if the given email id and mobileNumber is already exists then
-     * match with existing user and given user to find the two user is same
+     * match with existing user and given user to find the two user is same.
      * if same update the user details and returns user details object
-     * otherwise throws OnlineStoreException.
+     * otherwise throws RuntimeException.</p>
      *
      * @param user                     details of the user.
      * @return UserDTO                 updated details of the user.
@@ -55,17 +56,19 @@ public interface UserService extends UserDetailsService {
     UserDTO updateUser(UserDTO user);
 
     /**
-     * Delete the user using given user id.
-     * if the given user id is not exist throws OnlineStoreException
-     * otherwise delete the user.
+     * <p>Delete the user using given user id.
+     * if the given user id is not exist throws RuntimeException
+     * otherwise delete the user.</p>
      *
-     * @return String                  status message.
+     * @param id         id of the user.
+     * @return String    custom status message.
      */
-    String deleteUser();
+    String deleteUser(long id);
 
     /**
-     * Get all registered user details.
-     * if the users are not exists throws OnlineStoreException otherwise returns user details.
+     * <p>Get all registered user details.
+     * if the users are not exists throws RuntimeException
+     * otherwise returns user details.</p>
      *
      * @return List<User>              details of the registered user.
      */

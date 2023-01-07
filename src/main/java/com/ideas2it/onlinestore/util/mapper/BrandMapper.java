@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 Ideas2it, Inc.All rights are reserved.
- * 
- * This document is protected by copyright. No part of this document may be 
- * reproduced in any form by any means without prior written authorization of 
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
  * Ideas2it and its licensors, if any.
  */
 package com.ideas2it.onlinestore.util.mapper;
@@ -24,30 +24,31 @@ public class BrandMapper {
 
 	/**
 	 * Converts brandDTO to brand
-	 * 
+	 *
 	 * @param brandDTO
 	 * @return brand
 	 */
-	public Brand convertBrandDTOToBrand(BrandDTO brandDTO) {
-		Brand brand = new Brand();
-		
-		if (null != brandDTO.getId()) {
-		    brand.setId(brandDTO.getId());
+	public static Brand convertBrandDTOToBrand(BrandDTO brandDTO) {
+		Brand brand = null;
+
+		if (null != brandDTO) {
+			brand = Brand.builder().id(brandDTO.getId()).name(brandDTO.getName()).build();
 		}
-		brand.setName(brandDTO.getName());
 		return brand;
 	}
-	
+
 	/**
 	 * Converts brand to brandDTO
-	 * 
+	 *
 	 * @param brand
 	 * @return brandDTO
 	 */
-	public BrandDTO convertBrandToBrandDTO(Brand brand) {
-		BrandDTO brandDTO = new BrandDTO();
-		brandDTO.setId(brand.getId());
-		brandDTO.setName(brand.getName());
+	public static BrandDTO convertBrandToBrandDTO(Brand brand) {
+		BrandDTO brandDTO = null;
+
+		if (null != brand) {
+			brandDTO = BrandDTO.builder().id(brand.getId()).name(brand.getName()).build();
+		}
 		return brandDTO;
 	}
 }

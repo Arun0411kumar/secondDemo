@@ -19,9 +19,9 @@ import com.ideas2it.onlinestore.dto.AddressDTO;
 public interface AddressService {
 
     /**
-     * Add address to user using given address details.
+     * <p>Add address to user using given address details.
      * if the given address details are not valid
-     * throws OnlineStoreException otherwise returns string message.
+     * throws RuntimeException otherwise returns string message.</p>
      *
      * @param address                 details of the address.
      * @return String                 status message.
@@ -29,22 +29,22 @@ public interface AddressService {
     String addAddress(AddressDTO address);
 
     /**
-     * Delete the address from the user using given address id.
-     * if the given address id is not exists throws OnlineStoreException
-     * otherwise returns string message.
+     * <p>Delete the address from the user using given address id.
+     * if the given address id is not exists throws RuntimeException
+     * otherwise returns string message.</p>
      *
-     * @param id                      id of the address.
-     * @return String                 status message.
+     * @param id            id of the address.
+     * @return String       status message.
      */
     String deleteAddress(long id);
 
     /**
-     * Get the address using given address id.
-     * if the given address id is not valid throws OnlineStoreException otherwise
-     * returns address object.
+     * <p>Get the address using given address id.
+     * if the given address id is not valid throws
+     * RuntimeException otherwise returns address object.</p>
      *
-     * @param id                        id of the address.
-     * @return AddressDTO               details of the address.
+     * @param id             id of the address.
+     * @return AddressDTO    details of the address.
      */
     AddressDTO getAddressById(long id);
 }

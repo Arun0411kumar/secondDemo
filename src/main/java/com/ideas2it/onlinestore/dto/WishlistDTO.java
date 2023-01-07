@@ -7,8 +7,10 @@
  */
 package com.ideas2it.onlinestore.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 
@@ -21,6 +23,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Getter
 @Setter
+@Builder
 public class WishlistDTO {
     private long id;
     @NotBlank(message = "Name must be mentioned")

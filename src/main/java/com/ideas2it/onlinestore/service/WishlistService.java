@@ -10,6 +10,7 @@ package com.ideas2it.onlinestore.service;
 import java.util.List;
 import com.ideas2it.onlinestore.dto.WishlistDTO;
 import com.ideas2it.onlinestore.model.Product;
+import com.ideas2it.onlinestore.model.User;
 import com.ideas2it.onlinestore.model.Wishlist;
 
 /**
@@ -22,49 +23,50 @@ import com.ideas2it.onlinestore.model.Wishlist;
 public interface WishlistService {
 
     /**
-     * Create wishlist to user using given wishlist details.
-     * if the given details is not valid throws OnlineStoreException.
+     * <p>Create wishlist to user using given wishlist details.
+     * if the given details is not valid throws RuntimeException.</p>
      *
-     * @param wishlist                details of the wishlist.
-     * @return WishlistDTO            details of the created wishlist.
+     * @param wishlist        details of the wishlist.
+     * @return WishlistDTO    details of the created wishlist.
      */
-    WishlistDTO createWishlist(WishlistDTO wishlist) ;
+    WishlistDTO createWishlist(WishlistDTO wishlist, User user) ;
 
     /**
-     * Get the wishlist using given wishlist id.
-     * if the given wishlist id is not exists throws OnlineStoreException
-     * otherwise returns wishlist object.
+     * <p>Get the wishlist using given wishlist id.
+     * if the given wishlist id is not exists throws RuntimeException
+     * otherwise returns wishlist object.</p>
      *
-     * @param id                      id of the wishlist.
-     * @return Wishlist               details of the wishlist.
+     * @param id               id of the wishlist.
+     * @return Wishlist        details of the wishlist.
      */
     Wishlist getWishlistById(long id);
 
-    /** Add product to the user wishlist using the given product id
-     * if the product id is not exists throws OnlineStoreException
-     * otherwise returns status message.
+    /**
+     * <p>Add product to the user wishlist using the given product id
+     * if the product id is not exists throws RuntimeException
+     * otherwise returns status message.</p>
      *
-     * @param productId                 product id of the product.
-     * @return String                   status message.
+     * @param productId     product id of the product.
+     * @return String       status message.
      */
     String addProductToWishlist(long productId);
 
     /**
-     * Remove product from the user wishlist using given product id.
-     * if the given product id is not exists throws OnlineStoreException
-     * otherwise returns status message.
+     * <p>Remove product from the user wishlist using given product id.
+     * if the given product id is not exists throws RuntimeException
+     * otherwise returns status message.</p>
      *
-     * @param productId                 product id of the product.
-     * @return String                   status message.
+     * @param productId     product id of the product.
+     * @return String       status message.
      */
     String removeProductFromWishlist(long productId);
 
     /**
-     * Get Products from the user wishlist.
-     * if the products not exists throws OnlineStoreException
-     * otherwise returns products details.
+     * <p>Get Products from the user wishlist.
+     * if the products not exists throws RuntimeException
+     * otherwise returns products details.</p>
      *
-     * @return List<Product>           details of the products.
+     * @return List<Product>    details of the products.
      */
     List<Product> getAllWishlistProducts();
 }

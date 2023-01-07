@@ -51,7 +51,6 @@ public interface StockService {
 	 * </p>
 	 *
 	 * @return List<StockDTO> - list of Stock products
-	 * @throws OnlineStoreException - occur if stock table is empty
 	 */
 	public List<StockDTO> getStockProducts();
 
@@ -67,8 +66,6 @@ public interface StockService {
 	 * </p>
 	 *
 	 * @return List<StockDTO> - list of Stock products
-	 * @throws OnlineStoreException - occur if stock table is empty or seller can't
-	 *                              have stocks.
 	 */
 	public List<StockDTO> getStockProductsBySeller();
 
@@ -84,7 +81,6 @@ public interface StockService {
 	 * </p>
 	 *
 	 * @return StockDTO - details of the stock
-	 * @throws OnlineStoreException - occur if searching id is not there
 	 */
 	public StockDTO getStockProductById(long id);
 
@@ -101,7 +97,6 @@ public interface StockService {
 	 *
 	 * @param productName - name of the product
 	 * @return boolean - true/false
-	 * @throws OnlineStoreException - occur if this product is not there in stock
 	 */
 	int getQuantity(String productName);
 
@@ -119,7 +114,6 @@ public interface StockService {
 	 * @param productName - name of the product
 	 * @param quantity - quantity of the product
 	 * @return boolean - true/false
-	 * @throws OnlineStoreException - occur if this product is not there in stock
 	 */
 	boolean decreaseQuantity(String productName, int quantity);
 
@@ -137,7 +131,6 @@ public interface StockService {
 	 * @param productName - name of the product
 	 * @param quantity - quantity of the product
 	 * @return boolean - true/false
-	 * @throws OnlineStoreException - occur if this product is not there in stock
 	 */
 	boolean increaseQuantity(String productName, int quantity);
 
@@ -153,7 +146,6 @@ public interface StockService {
 	 *
 	 * @param id - id of the stock
 	 * @return boolean - true/false
-	 * @throws OnlineStoreException - occur if searching id is not there
 	 */
 	public boolean deleteStock(long id);
 
@@ -171,7 +163,6 @@ public interface StockService {
 	 * @param id - id of the stock
 	 * @param stockDTO - details of the stock
 	 * @return boolean - true/false
-	 * @throws OnlineStoreException - occur if searching id is not there
 	 */
 	public boolean updateStock(long id, StockDTO stockDTO);
 }

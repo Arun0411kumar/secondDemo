@@ -37,7 +37,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @Component
-public class SpringFoxConfig {
+public class SpringFoxCongif {
 
 	/**
 	 * This method generates a Docket object that contains 

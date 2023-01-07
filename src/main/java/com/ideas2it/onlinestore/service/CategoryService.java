@@ -31,7 +31,6 @@ public interface CategoryService {
 	 * </p>
 	 *
 	 * @return categoryDTO - details of the category DTO
-	 * @throws OnlineStoreException - occur category object is not saved into database
 	 */
 	public CategoryDTO createCategory(CategoryDTO categoryDTO);
 
@@ -45,7 +44,6 @@ public interface CategoryService {
 	 * </p>
 	 *
 	 * @return List<CategoryDTO> - list of categoryDTO object
-	 * @throws OnlineStoreException - occur data could be empty
 	 */
 	public List<CategoryDTO> getCategories();
 
@@ -61,8 +59,22 @@ public interface CategoryService {
 	 * </p>
 	 *
 	 * @param categoryName - user given category name
-	 * @return List<CategoryDTO> - list of sub category product
-	 * @throws OnlineStoreException - occur searching name shouldn't present in database
+	 * @return CategoryDTO - details of the category DTO
 	 */
 	public CategoryDTO getCategoryByName(String categoryName);
+
+	/**
+	 * <p>
+	 * This method is used sub category by using sub category name.
+	 * This method get the sub category name from product service and it check
+	 * if sub category name valid it get the category object based on
+	 * that sub category name then it will convert category DTO object
+	 * and send this object wherever this method was called
+	 * else it will throw exception.
+	 * </p>
+	 *
+	 * @param subCategoryName - user given sub category name
+	 * @return CategoryDTO - details of the category DTO
+	 */
+	CategoryDTO getSubCategoryByName(String subCategoryName);
 }

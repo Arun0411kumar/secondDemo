@@ -7,8 +7,8 @@
  */
 package com.ideas2it.onlinestore.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
@@ -20,7 +20,6 @@ import javax.validation.constraints.NotBlank;
  * @since - 2022-12-20
  */
 @Getter
-@Setter
 public class AuthenticationRequest {
 
     @NotBlank(message = "Username should be mentioned")

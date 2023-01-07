@@ -13,15 +13,15 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import com.ideas2it.onlinestore.model.Product;
-import com.ideas2it.onlinestore.service.WishlistService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ideas2it.onlinestore.model.Product;
+import com.ideas2it.onlinestore.service.WishlistService;
 
 /**
  * Controller for Wishlist
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/wishlist")
 public class WishlistController {
+
     private WishlistService wishlistService;
 
     @Autowired
@@ -41,9 +42,9 @@ public class WishlistController {
     }
 
     /**
-     * Add product to the user wishlist using the product id
+     * <p>Add product to the user wishlist using the product id
      * if the product is added return Status message otherwise
-     * throws OnlineStoreException
+     * throws RuntimeException.</p>
      *
      * @param productId                 product id of the product.
      * @return ResponseEntity<String>   status message.
@@ -58,9 +59,9 @@ public class WishlistController {
     }
 
     /**
-     * Remove product from the user wishlist using product id
+     * <p>Remove product from the user wishlist using product id
      * if the product is removed return Status message otherwise
-     * throws OnlineStoreException.
+     * throws RuntimeException.</p>
      *
      * @param productId                 product id of the product.
      * @return ResponseEntity<String>   status message.
@@ -75,9 +76,9 @@ public class WishlistController {
     }
 
     /**
-     * Get all liked products from the user
+     * <p>Get all liked products from the user
      * wishlist whatever user is saved into it.
-     * if products not exists throws OnlineStoreException.
+     * if products not exists throws RuntimeException.</p>
      *
      * @return List<Product>             liked products in user wishlist.
      */

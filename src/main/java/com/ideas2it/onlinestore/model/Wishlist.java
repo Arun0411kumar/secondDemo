@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -29,6 +30,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 @Getter
 @Setter
+@SuperBuilder
 public class Wishlist extends BaseModel {
     @Column(columnDefinition = "varchar(255) not null")
     private String name;
@@ -41,4 +43,8 @@ public class Wishlist extends BaseModel {
             joinColumns = { @JoinColumn(name = "wishlist_id")},
             inverseJoinColumns = { @JoinColumn(name = "product_id")})
     private List<Product> products;
+
+    public Wishlist() {
+
+    }
 }

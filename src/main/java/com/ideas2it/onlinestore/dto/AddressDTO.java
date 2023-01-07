@@ -14,10 +14,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import com.ideas2it.onlinestore.util.constants.Constant;
+import lombok.Setter;
 
 /**
  * It represents the address DTO.
@@ -28,6 +29,7 @@ import com.ideas2it.onlinestore.util.constants.Constant;
  */
 @Getter
 @Setter
+@Builder
 public class AddressDTO {
 
     private long id;

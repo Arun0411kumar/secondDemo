@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 Ideas2it, Inc.All rights are reserved.
- * 
- * This document is protected by copyright. No part of this document may be 
- * reproduced in any form by any means without prior written authorization of 
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
  * Ideas2it and its licensors, if any.
  */
 package com.ideas2it.onlinestore.controller;
@@ -12,15 +12,13 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ideas2it.onlinestore.dto.BrandDTO;
@@ -40,13 +38,12 @@ import io.swagger.annotations.ApiParam;
  * @since 12.12.2022
  */
 @RestController
-@RequestMapping("/product")
+@RequestMapping("${server.servlet.contextPath}/products")
 public class ProductController {
 
 	private ProductService productService;
-	
 	private StockService stockService;
-	
+
 	@Autowired
 	private ProductController(ProductService productService, StockService stockService) {
 		this.productService = productService;
@@ -54,273 +51,302 @@ public class ProductController {
 	}
 
 	/**
-	 * Insert a product using the user input if it is valid otherwise it 
-	 * throws exception.
-	 * 
+	 * <p>This method is used to insert a product by the user input. It gets
+	 * the input from the user as a request.The inputs entered by the user
+	 * should be valid and also the category, sub category, brand specified
+	 * in the product must already exists in the database otherwise exception
+	 * is thrown.If it is valid, the product is sent to its corresponding
+	 * service methods to insert the new product.If it is created successfully,
+	 * then the created product is returned.</p>
+	 *
 	 * @param product - the product to inserted
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while creating product.
+	 * @return productDTO - created product
 	 */
 	@PostMapping
 	@ApiOperation(value = "Adds new product",
-            notes = "Seller can Add new products",
-            response = ProductDTO.class)
-	private ResponseEntity<ProductDTO> add(@Valid @RequestBody ProductDTO product) {
-		return new ResponseEntity<>(productService.addProduct(product), HttpStatus.CREATED);
+			notes = "Seller can Add new products",
+			response = ProductDTO.class)
+	private ProductDTO addProduct(@Valid @RequestBody ProductDTO product) {
+		return productService.addProduct(product);
 	}
 
 	/**
-	 * Used to view all the product if products exists otherwise throws exception.
-	 * 
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException if no products found.
+	 * <p>This method is used to get all the product.It calls the corresponding
+	 * service method to check whether if products exists otherwise
+	 * throws no products found exception.If the products exists, it returns
+	 * the list of products available.</p>
+	 *
+	 * @return list of products available
 	 */
 	@GetMapping("/all")
 	@ApiOperation(value = "Shows all the projects",
-            notes = "User can view all the products available",
-            response = ProductDTO.class)
-	private ResponseEntity<List<ProductDTO>> getAll() {
-		return new ResponseEntity<List<ProductDTO>>(productService.getAll(), HttpStatus.OK);
+			notes = "User can view all the products available",
+			response = ProductDTO.class)
+	private List<ProductDTO> getAllProducts() {
+		return productService.getAll();
 	}
 
 	/**
-	 * Used to view all the product if products exists by brand otherwise throws exception.
-	 * 
+	 * <p>This method is used to get all the product by a particular brand.It
+	 * calls the corresponding service method to check whether if brand and
+	 * products exists otherwise throws no products found or brand not found
+	 * exception.If the products exists in that brand, it returns the list of products
+	 * available in that brand.</p>
+	 *
 	 * @param id - id of the brand
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting all  the products.
+	 * @return list of products available in that brand
 	 */
-	@GetMapping("/brands")
+	@GetMapping("/brand/{id}")
 	@ApiOperation(value = "Shows products by brand",
-            notes = "User can view all the products available in a particular brand",
-            response = ProductDTO.class)
-	private ResponseEntity<Object> getByBrand(@ApiParam(name = "ID", value = "id of the brand") @RequestParam("id") Long brandId) {
-		return new ResponseEntity<>(productService.getBrand(brandId), HttpStatus.OK);
+			notes = "User can view all the products available in a particular brand",
+			response = ProductDTO.class)
+	private List<ProductDTO> getProductsByBrand(@ApiParam(name = "ID",
+			value = "id of the brand") @PathVariable("id") Long brandId) {
+		return productService.getByBrand(brandId);
 	}
 
 	/**
-	 * Used to view all the product if products exists by category otherwise throws exception.
-	 * 
-	 * @param id - category id
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting all  the products.
+	 * <p>This method is used to get all the product by a particular category.It
+	 * calls the corresponding service method to check whether if category and
+	 * products exists otherwise throws no products found or category not found
+	 * exception.If the products exists in that category, it returns the list of products
+	 * available in that category.</p>
+	 *
+	 * @param name - category name to get products
+	 * @return list of products available in that category name.
 	 */
-	@GetMapping("/category")
+	@GetMapping("/category/{name}")
 	@ApiOperation(value = "Shows products by category",
-    notes = "User can view all the products available in a particular category",
-    response = ProductDTO.class)
-	private ResponseEntity<Object> getByCategory(@ApiParam(name = "ID", value = "id of the category") @RequestParam("id") Long categoryId) {
-		return new ResponseEntity<>(productService.getByCategory(categoryId), HttpStatus.OK);
+			notes = "User can view all the products available in a particular category",
+			response = ProductDTO.class)
+	private List<ProductDTO> getProductsByCategory(@ApiParam(name = "Name", value = "name "
+			+ "of the category") @PathVariable("name") String categoryName) {
+		return productService.getByCategory(categoryName);
 	}
 
 	/**
-	 * Used to view all the product if products exists by sub category otherwise throws exception.
-	 * 
-	 * @param id - sub category id
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting all  the products.
+	 * <p>This method is used to get all the product by a particular sub category.It
+	 * calls the corresponding service method to check whether if sub category and
+	 * products exists otherwise throws no products found or sub category not found
+	 * exception.If the products exists in that sub category, it returns the list of products
+	 * available in that sub category.</p>
+	 *
+	 * @param name - sub category name
+	 * @return list of products available in that sub category name.
 	 */
-	@GetMapping("/subcategory")
+	@GetMapping("/subcategory/{name}")
 	@ApiOperation(value = "Shows products by sub category",
-    notes = "User can view all the products available in a particular sub category",
-    response = ProductDTO.class)
-	private ResponseEntity<Object> getBySubCategory(@ApiParam(name = "ID", value = "id of the sub category") @RequestParam("id") Long subCategoryId) {
-		return new ResponseEntity<>(productService.getBySubCategory(subCategoryId), HttpStatus.OK);
+			notes = "User can view all the products available in a particular sub category",
+			response = ProductDTO.class)
+	private List<ProductDTO> getProductsBySubCategory(@ApiParam(name = "Name",
+			value = "Name of the sub category") @PathVariable("name") String subCategoryName) {
+		return productService.getBySubCategory(subCategoryName);
 	}
 
 	/**
-	 * Updates the product by using the id of the product otherwise throws exception.
-	 * 
-	 * @param id - id of the product
+	 * <p>This method is used to update a product by the user input. It gets
+	 * the input from the user as a request.The inputs entered by the user
+	 * should be valid and also the category, sub category, brand specified
+	 * in the product must already exists in the database otherwise exception
+	 * is thrown.If it is valid, the product is sent to its corresponding
+	 * service methods to update the exist product.If it is updated successfully,
+	 * then the updated product is returned.</p>
+	 *
+	 * @param id - id of the product to be updated
 	 * @param product - product to be updated.
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while updating the product.
+	 * @return product that is updated
 	 */
-	@PutMapping
+	@PutMapping("/{id}")
 	@ApiOperation(value = "Updates products by id",
-    notes = "Seller can update the product available",
-    response = ProductDTO.class)
-	private ResponseEntity<ProductDTO> update(@ApiParam(name = "ID", value = "id of the product to be updated") @RequestParam("id") Long productId,
-			@RequestBody ProductDTO product) {
+			notes = "Seller can update the product available",
+			response = ProductDTO.class)
+	private ProductDTO updateProduct(@ApiParam(name = "ID", value = "id of the product"
+			+ " to be updated") @PathVariable("id") Long productId,
+									 @RequestBody ProductDTO product) {
 		product.setId(productId);
-		return new ResponseEntity<ProductDTO>(productService.updateProduct(product), HttpStatus.OK);
+		return productService.updateProduct(product);
 	}
 
 	/**
-	 * Used to view a product by using it's id if it exists otherwise throws exception.
-	 * 
-	 * @param id - id of the product
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting the product.
+	 * <p>This method is used to get the product by a particular product id.It
+	 * calls the corresponding service method to check whether if the
+	 * products exists otherwise it throws product not found
+	 * exception.If the products exists, it returns the product available.</p>
+	 *
+	 * @param id - id of the product to be viewed.
+	 * @return product that is found.
 	 */
-	@GetMapping
+	@GetMapping("/{id}")
 	@ApiOperation(value = "Shows product by id",
-    notes = "User can view the product available by id",
-    response = ProductDTO.class)
-	private ResponseEntity<ProductDTO> getById(@ApiParam(name = "ID", value = "id of the product to be viewed") @RequestParam("id") Long productId) {
-		return new ResponseEntity<ProductDTO>(productService.getById(productId), HttpStatus.OK);
+			notes = "User can view the product available by id",
+			response = ProductDTO.class)
+	private ProductDTO getProduct(@ApiParam(name = "ID", value = "id of the product"
+			+ " to be viewed") @PathVariable("id") Long productId) {
+		return productService.getById(productId);
 	}
 
 	/**
-	 * Insert a brand using the user input if it is valid otherwise throws exception.
-	 * 
+	 * <p>This method is used to insert a brand by the user input. It gets
+	 * the input from the user as a request.The inputs entered by the user
+	 * should be valid otherwise exception is thrown.If it is valid, the brand
+	 * is sent to its corresponding service methods to insert the new brand.If
+	 * it is created successfully,then the created brand is returned.</p>
+	 *
 	 * @param brand - brand to be inserted.
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while creating the brand.
+	 * @return created brand
 	 */
-	@PostMapping("/brand")
+	@PostMapping("/brands")
 	@ApiOperation(value = "Adds brand",
-    notes = "Admin can create a new brand",
-    response = BrandDTO.class)
-	private ResponseEntity<BrandDTO> addBrand(@Valid @RequestBody BrandDTO brand) {
-		return new ResponseEntity<BrandDTO>(productService.addBrand(brand), HttpStatus.CREATED);
+			notes = "Admin can create a new brand",
+			response = BrandDTO.class)
+	private BrandDTO addBrand(@Valid @RequestBody BrandDTO brand) {
+		return productService.addBrand(brand);
 	}
 
 	/**
-	 * Used to view all the brand if brands exists otherwise throws exception.
-	 * 
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting the brands.
+	 * <p>This method is used to get all the brands availbale.It calls the corresponding
+	 * service method to check whether if brands exist otherwise
+	 * throws no brands found exception.If the brands exists, it returns
+	 * the list of brands available.</p>
+	 *
+	 * @return list of brands available.
 	 */
-	@GetMapping("/brand/all")
+	@GetMapping("/brands/all")
 	@ApiOperation(value = "Shows all the brands",
-    notes = "User can view all the brands",
-    response = BrandDTO.class)
-	private ResponseEntity<List<BrandDTO>> viewBrands() {
-		return new ResponseEntity<List<BrandDTO>>(productService.getAllBrands(), HttpStatus.OK);
+			notes = "User can view all the brands",
+			response = BrandDTO.class)
+	private List<BrandDTO> getBrands() {
+		return productService.getAllBrands();
 	}
 
 	/**
-	 * Updates the brand by using the id of the brand. otherwise throws exception
-	 * 
-	 * @param id - id of the brand
+	 * <p>This method is used to update a brand by the user input. It gets
+	 * the input from the user as a request.The inputs entered by the user
+	 * should be valid otherwise exception is thrown.If it is valid, the brand is sent to its corresponding
+	 * service methods to update the existing brand.If it is updated successfully,
+	 * then the updated brand is returned.</p>
+	 *
+	 * @param id - id of the brand to be updated.
 	 * @param brand - brand to be updated
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while updating the brand.
+	 * @return updated brand.
 	 */
 	@ApiOperation(value = "Updates the brand",
-		    notes = "Admin can update the brand",
-		    response = BrandDTO.class)
-	@PutMapping("/brand")
-	private ResponseEntity<BrandDTO> updateBrand(@ApiParam(name = "ID", value = "id of the brand to be updated") @RequestParam("id") Long brandId,
-			@RequestBody BrandDTO brand) {		
-        brand.setId(brandId);           
-		return new ResponseEntity<BrandDTO>(productService.updateBrand(brand), HttpStatus.OK);
+			notes = "Admin can update the brand",
+			response = BrandDTO.class)
+	@PutMapping("/brands/{id}")
+	private BrandDTO updateBrand(@ApiParam(name = "ID", value = "id of the brand"
+			+ " to be updated") @PathVariable("id") Long brandId,
+								 @RequestBody BrandDTO brand) {
+		brand.setId(brandId);
+		return productService.updateBrand(brand);
 	}
 
 	/**
-	 * Used to view a brand by using it's id if it exists otherwise throws 
-	 * exception.
-	 * 
+	 * <p>This method is used to get the brand by a particular brand id.It
+	 * calls the corresponding service method to check whether if the
+	 * brand exists otherwise it throws brand not found
+	 * exception.If the brand exists, it returns the brand available.</p>
+	 *
 	 * @param id - id of the brand
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
-	 * @throws OnlineStoreException - throws exception if something went wrong 
-	 * while getting the brand.
+	 * @return brand that is found.
 	 */
-	@GetMapping("/brand")
+	@GetMapping("/brands/{id}")
 	@ApiOperation(value = "Shows the brand by id",
-    notes = "User can view the brand available",
-    response = BrandDTO.class)
-	private ResponseEntity<BrandDTO> viewBrand(@ApiParam(name = "ID", value = "id of the brand to be viewed") @RequestParam("id") Long brandId) {
-		return new ResponseEntity<BrandDTO>(productService.getBrand(brandId), HttpStatus.OK);
+			notes = "User can view the brand available",
+			response = BrandDTO.class)
+	private BrandDTO getBrand(@ApiParam(name = "ID", value = "id of the brand "
+			+ "to be viewed") @PathVariable("id") Long brandId) {
+		return productService.getBrand(brandId);
 	}
-	
+
 	/**
-	 * This method is used to get list of stock products if it exists otherwise it throws exception.
-	 * 
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
+	 * <p>This method is used to get all the stocks availbale.It calls the corresponding
+	 * service method to check whether if stocks exist otherwise
+	 * throws no stocks found exception.If the stocks exists, it returns
+	 * the list of stocks available.</p>
+	 *
+	 * @return list of stocks available.
 	 */
-	@GetMapping("/stock/all")
+	@GetMapping("/stocks/all")
 	@ApiOperation(value = "Shows all stocks",
-    notes = "Seller or admin can view all the stocks available",
-    response = StockDTO.class)
-	private ResponseEntity<List<StockDTO>> getStocks() {
-		return new ResponseEntity<>(stockService.getStockProducts(), HttpStatus.OK);
+			notes = "Seller or admin can view all the stocks available",
+			response = StockDTO.class)
+	private List<StockDTO> getStocks() {
+		return stockService.getStockProducts();
 	}
-	
+
 	/**
-	 * This method is used to get the stock product 
-	 * by using stock id if it exist otherwise it throws exception.
-	 * 
+	 * <p>This method is used to get the stock by a particular stock id.It
+	 * calls the corresponding service method to check whether if the
+	 * brand exists otherwise it throws stock not found
+	 * exception.If the stock exists, it returns the stock available.</p>
+	 *
 	 * @param id - id of the stock to be viewed
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
+	 * @return stock that is found.
 	 */
-	@GetMapping("/stock")
+	@GetMapping("/stocks/{id}")
 	@ApiOperation(value = "Shows the stock by id",
-    notes = "User can view the stock available by using id",
-    response = StockDTO.class)
-	private ResponseEntity<StockDTO> getStock(@ApiParam(name = "ID", value = "id of the stock to be viewed") @RequestParam("id") long id) {
-		return new ResponseEntity<>(stockService.getStockProductById(id), HttpStatus.OK);
+			notes = "User can view the stock available by using id",
+			response = StockDTO.class)
+	private StockDTO getStock(@ApiParam(name = "ID", value = "id of the stock"
+			+ " to be viewed") @PathVariable("id") long id) {
+		return stockService.getStockProductById(id);
 	}
-	
+
 	/**
-	 * This method is used to get the stock product 
-	 * by using seller if it exists otherwise it throws exception
-	 * 
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
+	 * <p>This method is used to get all the stocks by a particular seller id.It
+	 * calls the corresponding service method to check whether if stocks exist
+	 * and seller exists otherwise throws no stocks found or seller not found
+	 * exception.If the stocks exist in that seller id, it returns the list of
+	 * stocks available in that seller.</p>
+	 *
+	 * @return list of stocks in that seller id.
 	 */
-	@GetMapping("/stock/seller")
+	@GetMapping("/stocks/seller")
 	@ApiOperation(value = "Shows the stocks by seller id",
-    notes = "Seller or admin can view the stock available by using seller id",
-    response = StockDTO.class)
-	private ResponseEntity<List<StockDTO>> getAllStockBySeller() {
-		return new ResponseEntity<>(stockService.getStockProductsBySeller(), HttpStatus.OK);
+			notes = "Seller or admin can view the stock available by seller",
+			response = StockDTO.class)
+	private List<StockDTO> getAllStockBySeller() {
+		return stockService.getStockProductsBySeller();
 	}
-	
+
 	/**
-	 * This method is used to delete the stock product 
-	 * by using stock id.It throws exception if the particular stock does not exists.
-	 * 
+	 * <p>This method is used to delete a available stock.The stock id to be
+	 * delete is passed to corresponding service method and checks whether the
+	 * stock exist otherwise it throws stock not found exception.If the stock
+	 * is found, that stock is deleted. If it is deleted successfully, it
+	 * returns true otherwise it throws stock deletion failed exception.</p>
+	 *
 	 * @param id - id of the stock to be deleted
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
+	 * @return true if stock is deleted.
 	 */
-	@DeleteMapping("/stock")
+	@DeleteMapping("/stocks/{id}")
 	@ApiOperation(value = "Deletes the stock by id",
-    notes = "Seller or admin can delete the stock available by using id",
-    response = Boolean.class)
-	private ResponseEntity<Boolean> deleteStock(@ApiParam(name = "ID", value = "id of the stock to be deleted") @RequestParam("id") long id) {
-		return new ResponseEntity<>(stockService.deleteStock(id), HttpStatus.OK);
+			notes = "Seller or admin can delete the stock available by using id",
+			response = Boolean.class)
+	private boolean deleteStock(@ApiParam(name = "ID", value = "id of the stock"
+			+ " to be deleted") @PathVariable("id") long id) {
+		return stockService.deleteStock(id);
 	}
-	
+
 	/**
-	 * This method is used to get the stock product 
-	 * by using stock id.It throws exception if the particular stock does not exists.
-	 * 
+	 * <p>This method is used to update a stock by the user input. It gets
+	 * the input from the user as a request.The inputs entered by the user
+	 * should be valid otherwise exception is thrown.If it is valid, the stock is sent to its corresponding
+	 * service methods to update the existing stock.If it is updated successfully,
+	 * then the updated stock is returned.</p>
+	 *
 	 * @param id - stock id whose stock is to updated
 	 * @param stockDTO - stock to be updated
-	 * @return ResponseEntity - represents the whole HTTP response: status code,
-	 * headers, and body.
+	 * @return updated stock.
 	 */
-	@PutMapping("/stock")
+	@PutMapping("/stocks/{id}")
 	@ApiOperation(value = "Updates the stock by id",
-    notes = "Seller or admin can update the stock available by using id",
-    response = Boolean.class)
-	private ResponseEntity<Boolean> updateStock(
-			@ApiParam(name = "ID", value = "id of the stock to be updated") @RequestParam("id") long id, @RequestBody StockDTO stockDTO) {
-		return new ResponseEntity<>(stockService.updateStock(id, stockDTO), HttpStatus.OK);
+			notes = "Seller or admin can update the stock available by using id",
+			response = Boolean.class)
+	private boolean updateStock(
+			@ApiParam(name = "ID", value = "id of the stock to be updated")
+			@PathVariable("id") long id, @RequestBody StockDTO stockDTO) {
+		return stockService.updateStock(id, stockDTO);
 	}
 }

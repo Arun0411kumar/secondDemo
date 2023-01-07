@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 Ideas2it, Inc.All rights are reserved.
- * 
- * This document is protected by copyright. No part of this document may be 
- * reproduced in any form by any means without prior written authorization of 
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
  * Ideas2it and its licensors, if any.
  */
 package com.ideas2it.onlinestore.util.mapper;
@@ -22,52 +22,48 @@ import com.ideas2it.onlinestore.model.Product;
  */
 @Component
 public class ProductMapper {
-	
-	@Autowired
-	private BrandMapper brandMapper;
 
 	/**
 	 * Converts productDTO to product
-	 * 
+	 *
 	 * @param productDTO
 	 * @return product
 	 */
-	public Product convertProductDTOToProduct(ProductDTO productDTO) {
-		Product product = new Product();
-		
-		if (0 != productDTO.getId()) {
-		    product.setId(productDTO.getId());
+	public static Product convertProductDTOToProduct(ProductDTO productDTO) {
+		Product product = null;
+
+		if (null != productDTO) {
+			product = Product.builder().id(productDTO.getId()).brand(
+							BrandMapper.convertBrandDTOToBrand(productDTO.getBrand()))
+					.category(CategoryMapper.convertDTOToEntity(productDTO.getCategory())).subCategory(
+							CategoryMapper.convertDTOToEntity(productDTO.getSubCategory())).description(
+							productDTO.getDescription()).name(productDTO.getName()).price(
+							productDTO.getPrice()).dateOfManufacture(
+							productDTO.getDateOfManufacture()).dateOfExpire(
+							productDTO.getDateOfExpire()).quantity(productDTO.getQuantity()).build();
 		}
-		product.setBrand(brandMapper.convertBrandDTOToBrand(productDTO.getBrand()));
-		product.setCategory(productDTO.getCategory());
-		product.setSubCategory(productDTO.getSubCategory());
-		product.setDescription(productDTO.getDescription());
-		product.setName(productDTO.getName());
-		product.setPrice(productDTO.getPrice());
-		product.setDateOfManufacture(productDTO.getDateOfManufacture());
-		product.setDateOfExpire(productDTO.getDateOfExpiry());
-		product.setQuantity(productDTO.getQuantity());
 		return product;
 	}
-	
+
 	/**
 	 * Converts product to productDTO
-	 * 
+	 *
 	 * @param product
 	 * @return productDTO
 	 */
-	public ProductDTO convertProductToProductDTO(Product product) {
-		ProductDTO productDTO = new ProductDTO();
-		productDTO.setId(product.getId());
-		productDTO.setBrand(brandMapper.convertBrandToBrandDTO(product.getBrand()));
-		productDTO.setCategory(product.getCategory());
-		productDTO.setSubCategory(product.getSubCategory());
-		productDTO.setDescription(product.getDescription());
-		productDTO.setName(product.getName());
-		productDTO.setPrice(product.getPrice());
-		productDTO.setDateOfManufacture(product.getDateOfManufacture());
-		productDTO.setDateOfExpiry(product.getDateOfExpire());
-		productDTO.setQuantity(product.getQuantity());
+	public static ProductDTO convertProductToProductDTO(Product product) {
+		ProductDTO productDTO = null;
+
+		if (null != product) {
+			productDTO = ProductDTO.builder().id(product.getId()).brand(
+							BrandMapper.convertBrandToBrandDTO(product.getBrand()))
+					.category(CategoryMapper.convertEntityToDTO(product.getCategory())).subCategory(
+							CategoryMapper.convertEntityToDTO(product.getSubCategory())).description(
+							product.getDescription()).name(product.getName()).price(
+							product.getPrice()).dateOfManufacture(
+							product.getDateOfManufacture()).dateOfExpire(
+							product.getDateOfExpire()).quantity(product.getQuantity()).build();
+		}
 		return productDTO;
 	}
 }

@@ -43,9 +43,9 @@ public class AddressController {
     }
 
     /**
-     * Add address to the user using given address details.
+     * <p>Add address to the user using given address details.
      * if the address details are not valid throws
-     * OnlineStoreException otherwise returns message.
+     * Runtime otherwise returns message.</p>
      *
      * @param addressDTO                 details of the address.
      * @return ResponseEntity<String>    status message.
@@ -59,9 +59,9 @@ public class AddressController {
     }
 
     /**
-     * Deletes the address from the user using given address id.
-     * if the given address id is not exists throws OnlineStoreException
-     * otherwise returns message.
+     * <p>Deletes the address from the user using given address id.
+     * if the given address id is not exists throws RuntimeException
+     * otherwise returns message.</p>
      *
      * @param addressId                 id of the address.
      * @return ResponseEntity<String>   status message.

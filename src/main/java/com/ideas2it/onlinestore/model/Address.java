@@ -7,10 +7,15 @@
  */
 package com.ideas2it.onlinestore.model;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * It is a simple JavaBean domain object representing an Address.
@@ -22,6 +27,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@SuperBuilder
 public class Address extends BaseModel{
     @Column(nullable = false)
     private String doorNumber;
@@ -40,4 +46,8 @@ public class Address extends BaseModel{
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    public Address() {
+
+    }
 }

@@ -1,7 +1,19 @@
+/*
+ * Copyright (c) 2022 Ideas2it, Inc.All rights are reserved.
+ *
+ * This document is protected by copyright. No part of this document may be
+ * reproduced in any form by any means without prior written authorization of
+ * Ideas2it and its licensors, if any.
+ */
 package com.ideas2it.onlinestore.model;
+
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
+@Getter
+@SuperBuilder
 public class Message {
 	private int statusCode;
 	private Date timestamp;
@@ -20,38 +32,6 @@ public class Message {
 		this.statusCode = statusCode;
 		this.timestamp = timestamp;
 		this.message = message;
-		this.description = description;
-	}
-
-	public int getStatusCode() {
-		return statusCode;
-	}
-
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
 		this.description = description;
 	}
 }

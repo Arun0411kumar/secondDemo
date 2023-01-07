@@ -9,8 +9,6 @@ package com.ideas2it.onlinestore.controller;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +27,9 @@ import io.swagger.annotations.ApiParam;
  * The Category controller class that implements an application that Simply read
  * operation called from service to controller class
  *
- * @version 1.0
  * @author arunkumar
+ * @version 1.0
+ * @since 16-12-2022
  */
 @RestController
 @RequestMapping("/category")
@@ -56,7 +55,8 @@ public class CategoryController {
 	 */
 	@PostMapping
 	@ApiOperation(value = "Add Category", notes = "Admin level access available only", response = CategoryDTO.class)
-	private CategoryDTO createCategory(@RequestBody @Valid CategoryDTO categoryDTO) {
+	private CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO) {
+		System.out.println(categoryDTO.getName());
 		return categoryService.createCategory(categoryDTO);
 	}
 
